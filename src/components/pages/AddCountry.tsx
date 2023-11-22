@@ -61,6 +61,7 @@ export default function AddCountry({route}: AddCountryScreenProps) {
                 style={styles.input}
                 placeholder="Country ID"
                 value={field.value}
+                keyboardType="numeric"
                 onChangeText={text => setValue('ccn3', text)}
               />
               {fieldState.invalid && (

@@ -4,9 +4,17 @@ import Colors from '../../styles/colors';
 export default StyleSheet.create({
   fieldContainer: {
     borderRadius: 4,
-    width: '80%',
+    width: '75%',
+  },
+  inputContainer: {
+    display: 'flex',
+    flexDirection: 'row',
     borderWidth: 2,
+    justifyContent: 'space-between',
     borderColor: Colors.GRAY_LINE,
+  },
+  crossMark: {
+    marginTop: 20,
   },
   headingText: {
     alignItems: 'center',
@@ -55,8 +63,9 @@ export default StyleSheet.create({
   buttontext: {
     display: 'flex',
     alignItems: 'center',
-    top: 200,
-    padding: 30,
+    top: 100,
+    padding: 16,
+    borderRadius: 10,
   },
   label: {
     fontSize: 16,

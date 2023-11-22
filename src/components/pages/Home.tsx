@@ -9,7 +9,7 @@ import styles from './Home.style';
 import {RefreshControl} from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {FontAwesomeIcon} from '@fortawesome/react-native-fontawesome';
-import {faCirclePlus} from '@fortawesome/pro-solid-svg-icons';
+import {faCirclePlus, faRemove} from '@fortawesome/pro-solid-svg-icons';
 import {AddCountryScreenParams} from '../../navigation/type';
 import {useCountryHook} from '../common/hooks/useAddCountry';
 import {Toast} from 'react-native-toast-notifications';
@@ -91,6 +91,10 @@ export default function HomeScreen({refetch}: CountryListProps) {
     return <Text>Error fetching data</Text>;
   }
 
+  const clearSearchTerm = () => {
+    setSearchTerm('');
+  };
+
   const renderItem = ({item}: {item: CountryCardProps['country']}) => (
     <CountryCard
       country={item}
@@ -108,37 +112,48 @@ export default function HomeScreen({refetch}: CountryListProps) {
     <View>
       <View style={styles.headingText}>
         <SearchButton onSearchClick={() => console.log('Search clicked')} />
-        <TextInput
-          placeholder="Search by country name"
-          style={styles.fieldContainer}
-          value={searchTerm}
-          onChangeText={text => setSearchTerm(text)}
-        />
+        <View style={styles.inputContainer}>
+          <TextInput
+            placeholder="Search by country name"
+            style={styles.fieldContainer}
+            value={searchTerm}
+            onChangeText={text => setSearchTerm(text)}
+          />
+          <View style={styles.crossMark}>
+            <TouchableOpacity onPress={clearSearchTerm}>
+              <FontAwesomeIcon icon={faRemove} />
+            </TouchableOpacity>
+          </View>
+        </View>
         <View style={styles.addItem}>
           <TouchableOpacity onPress={navigateToAddCountry}>
             <FontAwesomeIcon icon={faCirclePlus} size={20} />
           </TouchableOpacity>
         </View>
       </View>
-      <View>
-        <FlatList
-          data={filteredData}
-          renderItem={renderItem}
-          keyExtractor={item => item.ccn3}
-          onEndReached={({distanceFromEnd}) => {
-            if (distanceFromEnd < 0) {
-              return;
-            }
+      {filteredData.length === 0 ? (
+        <Text>No Data Found</Text>
+      ) : (
+        <View>
+          <FlatList
+            data={filteredData}
+            renderItem={renderItem}
+            keyExtractor={item => item.ccn3}
+            onEndReached={({distanceFromEnd}) => {
+              if (distanceFromEnd < 0) {
+                return;
+              }
 
-            onEndReached();
-          }}
-          refreshControl={
-            <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
-          }
-          ItemSeparatorComponent={ItemSeparatorComponent}
-          onRefresh={refetch}
-        />
-      </View>
+              onEndReached();
+            }}
+            refreshControl={
+              <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+            }
+            ItemSeparatorComponent={ItemSeparatorComponent}
+            onRefresh={refetch}
+          />
+        </View>
+      )}
     </View>
   );
 }
