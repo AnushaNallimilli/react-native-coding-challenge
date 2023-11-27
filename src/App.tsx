@@ -6,8 +6,22 @@ import {NativeBaseProvider} from 'native-base';
 import CountryDetails from './components/pages/Details';
 import AddCountry from './components/pages/AddCountry';
 import {ToastProvider} from 'react-native-toast-notifications';
+import {Country} from './components/common/useInfiniteCountries';
 
-const Stack = createNativeStackNavigator();
+export type StartupParamsList = {
+  Home: {
+    pageName: string | undefined;
+    session: string | undefined;
+  };
+  Details: {
+    country: any;
+  };
+
+  AddCountry: {
+    onCountryAdded: (newCountry: Country) => void;
+  };
+};
+const Stack = createNativeStackNavigator<StartupParamsList>();
 
 function App() {
   return (

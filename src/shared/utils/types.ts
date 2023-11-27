@@ -13,7 +13,7 @@
  * ```
  */
 export type Lookup<TKey extends string | number | symbol, TValue> = Readonly<
-    Record<TKey, TValue>
+  Record<TKey, TValue>
 >;
 
 /**

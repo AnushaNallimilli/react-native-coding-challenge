@@ -3,8 +3,7 @@ import React, {useCallback, useEffect, useState} from 'react';
 import {Country, useCountryData} from '../common/useInfiniteCountries';
 import CountryCard, {CountryCardProps} from './Home/CountryCard';
 import SearchButton from '../../shared/ui/search-button/SearchButton';
-import {useNavigation} from '@react-navigation/native';
-import {useSearchTerm} from '../common/hooks/useSearchTerm';
+import {NavigationProp, useNavigation} from '@react-navigation/native';
 import styles from './Home.style';
 import {RefreshControl} from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
@@ -13,21 +12,19 @@ import {faCirclePlus, faRemove} from '@fortawesome/pro-solid-svg-icons';
 import {AddCountryScreenParams} from '../../navigation/type';
 import {useCountryHook} from '../common/hooks/useAddCountry';
 import {Toast} from 'react-native-toast-notifications';
+import {StartupParamsList} from '../../App';
+import Constants from '../../assets/constants/Constants';
+import Spinner from '../../shared/ui/spinner/Spinner';
+import Skeleton from '../../shared/ui/skeleton/Skeleton';
 
-export type CountryListProps = Readonly<{
-  refetch: () => void;
-}>;
-
-export default function HomeScreen({refetch}: CountryListProps) {
+export default function HomeScreen() {
   const {data, isLoading, isError} = useCountryData();
-  const navigation = useNavigation();
-  const searchTerm = useSearchTerm(term => term.searchTerm);
+  const [searchTerm, setSearchTerm] = useState('');
   const [pageNumber, setPageNumber] = useState(1);
   const [refreshing, setRefreshing] = useState(false);
   const {localCountries, setLocalCountries} = useCountryHook();
   const [reloadAsyncStore, setReloadAsyncStore] = useState(true);
-
-  const setSearchTerm = useSearchTerm(term => term.setsearchTerm);
+  const navigation = useNavigation<NavigationProp<StartupParamsList>>();
   const ItemSeparatorComponent = useCallback(
     () => <View style={styles.itemSeperator} />,
     [],
@@ -51,8 +48,6 @@ export default function HomeScreen({refetch}: CountryListProps) {
   const onAddCountry = useCallback(() => {
     Toast.show('Details Added');
     setReloadAsyncStore(true);
-
-    // setRefreshing(true);
   }, []);
 
   const navigateToAddCountry = () => {
@@ -71,10 +66,11 @@ export default function HomeScreen({refetch}: CountryListProps) {
 
   const onRefresh = useCallback(() => {
     setRefreshing(true);
+    isLoading;
     setTimeout(() => {
       setRefreshing(false);
     }, 2000);
-  }, []);
+  }, [isLoading]);
 
   const combinedData = (data || []).concat(localCountries || []);
 
@@ -83,12 +79,16 @@ export default function HomeScreen({refetch}: CountryListProps) {
       .toLowerCase()
       .includes(searchTerm.toLowerCase());
   });
-  if (isLoading) {
-    return <Text>Loading...</Text>;
+  if (isLoading || refreshing || reloadAsyncStore) {
+    return (
+      <View style={styles.spinnerStyle}>
+        <Spinner />
+      </View>
+    );
   }
 
   if (isError) {
-    return <Text>Error fetching data</Text>;
+    return <Text>{Constants.home.error}</Text>;
   }
 
   const clearSearchTerm = () => {
@@ -96,10 +96,12 @@ export default function HomeScreen({refetch}: CountryListProps) {
   };
 
   const renderItem = ({item}: {item: CountryCardProps['country']}) => (
-    <CountryCard
-      country={item}
-      onClick={() => navigation.navigate('Details', {country: item})}
-    />
+    <Skeleton isLoading={isLoading} height={150}>
+      <CountryCard
+        country={item}
+        onClick={() => navigation.navigate('Details', {country: item})}
+      />
+    </Skeleton>
   );
   const onEndReached = async () => {
     if (!isLoading && !isError) {
@@ -132,7 +134,7 @@ export default function HomeScreen({refetch}: CountryListProps) {
         </View>
       </View>
       {filteredData.length === 0 ? (
-        <Text>No Data Found</Text>
+        <Text>{Constants.home.data}</Text>
       ) : (
         <View>
           <FlatList
@@ -150,7 +152,6 @@ export default function HomeScreen({refetch}: CountryListProps) {
               <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
             }
             ItemSeparatorComponent={ItemSeparatorComponent}
-            onRefresh={refetch}
           />
         </View>
       )}

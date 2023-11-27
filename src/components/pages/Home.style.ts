@@ -73,4 +73,8 @@ export default StyleSheet.create({
     fontFamily: fonts.lato,
     fontWeight: 'bold',
   },
+  spinnerStyle: {
+    flex: 1,
+    justifyContent: 'center',
+  },
 });
