@@ -36,14 +36,14 @@ export default function HomeScreen() {
         const storedCountries = await AsyncStorage.getItem('countries');
         if (storedCountries) {
           setLocalCountries(JSON.parse(storedCountries));
-          setReloadAsyncStore(false);
         }
       } catch (error) {
         console.error('Error loading countries from AsyncStorage:', error);
       }
     };
     loadCountries();
-  }, [navigation, reloadAsyncStore, setLocalCountries]);
+    setReloadAsyncStore(false);
+  }, [reloadAsyncStore, setLocalCountries]);
 
   const onAddCountry = useCallback(() => {
     Toast.show('Details Added');
@@ -79,7 +79,7 @@ export default function HomeScreen() {
       .toLowerCase()
       .includes(searchTerm.toLowerCase());
   });
-  if (isLoading || refreshing || reloadAsyncStore) {
+  if (isLoading || refreshing) {
     return (
       <View style={styles.spinnerStyle}>
         <Spinner />
@@ -103,10 +103,10 @@ export default function HomeScreen() {
       />
     </Skeleton>
   );
-  const onEndReached = async () => {
+  const onEndReached = () => {
     if (!isLoading && !isError) {
       setPageNumber(prevPageNumber => prevPageNumber + 1);
-      return data ? pageNumber + 1 : [];
+      return filteredData ? pageNumber + 1 : [];
     }
   };
 
@@ -148,10 +148,12 @@ export default function HomeScreen() {
 
               onEndReached();
             }}
+            contentContainerStyle={styles.containerStyle}
             refreshControl={
               <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
             }
             ItemSeparatorComponent={ItemSeparatorComponent}
+            onEndReachedThreshold={0.4}
           />
         </View>
       )}

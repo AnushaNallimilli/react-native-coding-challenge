@@ -29,6 +29,9 @@ export default StyleSheet.create({
   itemSeperator: {
     paddingVertical: 6,
   },
+  containerStyle: {
+    paddingBottom: 150,
+  },
   addItem: {
     marginLeft: 10,
   },
@@ -51,7 +54,7 @@ export default StyleSheet.create({
     borderColor: Colors.DARK_GRAY,
     borderWidth: 1,
     borderRadius: 5,
-    marginBottom: 20,
+    marginBottom: 5,
     paddingHorizontal: 8,
   },
   errorText: {
@@ -69,12 +72,15 @@ export default StyleSheet.create({
   },
   label: {
     fontSize: 16,
-    marginBottom: 8,
+    marginBottom: 10,
     fontFamily: fonts.lato,
     fontWeight: 'bold',
   },
   spinnerStyle: {
     flex: 1,
     justifyContent: 'center',
+  },
+  parentForm: {
+    marginBottom: 10,
   },
 });

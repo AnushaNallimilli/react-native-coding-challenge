@@ -18,9 +18,12 @@ const Constants = {
   addCountry: {
     add: ' Add Country',
     name: 'countryName',
-    ccn: 'ccn',
+    ccn: 'CCN',
     ccn3: 'ccn3',
     capital: 'countryCapital',
+    capitalLabel: 'Country Capital',
+    statusLabel: 'Status',
+    nameLabel: 'Country Name',
     status: 'status',
     countryId: 'Country ID is required',
     countryname: 'Country Name is required',

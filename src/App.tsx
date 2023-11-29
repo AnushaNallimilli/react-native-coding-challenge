@@ -1,5 +1,4 @@
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
-
 import React from 'react';
 import HomeScreen from './components/pages/Home';
 import {NativeBaseProvider} from 'native-base';

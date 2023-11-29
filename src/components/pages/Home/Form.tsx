@@ -16,7 +16,7 @@ export default function Form({
   onChangeText,
 }: ControllerProps) {
   return (
-    <View>
+    <View style={styles.parentForm}>
       <Text style={styles.label}>{label}</Text>
       <TextInput
         style={styles.input}

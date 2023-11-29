@@ -40,17 +40,17 @@ export default function AddCountry({route}: AddCountryScreenProps) {
     },
     {
       name: Constants.addCountry.name,
-      label: Constants.addCountry.name,
+      label: Constants.addCountry.nameLabel,
       rules: {required: Constants.addCountry.countryname},
     },
     {
       name: Constants.addCountry.capital,
-      label: Constants.addCountry.capital,
+      label: Constants.addCountry.capitalLabel,
       rules: {required: Constants.addCountry.countrycapital},
     },
     {
       name: Constants.addCountry.status,
-      label: Constants.addCountry.status,
+      label: Constants.addCountry.statusLabel,
       rules: {required: Constants.addCountry.countryStatus},
     },
   ];

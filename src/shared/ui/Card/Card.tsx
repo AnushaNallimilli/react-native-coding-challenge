@@ -12,7 +12,6 @@ export default function Card({children, noPadding = false}: CardProps) {
     <Box
       rounded={8}
       width="100%"
-      overflow="hidden"
       borderWidth="1"
       borderRadius={10}
       borderColor={Colors.BORDER_COLOR}
