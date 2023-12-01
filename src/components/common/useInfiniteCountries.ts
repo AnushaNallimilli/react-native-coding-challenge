@@ -17,9 +17,11 @@ export type Country = Readonly<{
   population: number;
 }>;
 
-export const useCountryData = () => {
+export const useCountryData = (pageNumber: number, pageSize: number = 20) => {
   return useQuery<Country[]>('countries', async () => {
-    const response = await fetch('https://restcountries.com/v3.1/all');
+    const response = await fetch(
+      `https://restcountries.com/v3.1/all?page=${pageNumber}&pageSize=${pageSize}`,
+    );
     const data = await response.json();
     return data;
   });

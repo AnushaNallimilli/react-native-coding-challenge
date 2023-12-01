@@ -18,12 +18,14 @@ import Spinner from '../../shared/ui/spinner/Spinner';
 import Skeleton from '../../shared/ui/skeleton/Skeleton';
 
 export default function HomeScreen() {
-  const {data, isLoading, isError} = useCountryData();
   const [searchTerm, setSearchTerm] = useState('');
   const [pageNumber, setPageNumber] = useState(1);
+  const PAGE_SIZE = 20;
   const [refreshing, setRefreshing] = useState(false);
-  const {localCountries, setLocalCountries} = useCountryHook();
+  const {data, isLoading, isError} = useCountryData(pageNumber, PAGE_SIZE);
+  const {localCountries, setLocalCountries} = useCountryHook(); // importing the hook using zustand
   const [reloadAsyncStore, setReloadAsyncStore] = useState(true);
+
   const navigation = useNavigation<NavigationProp<StartupParamsList>>();
   const ItemSeparatorComponent = useCallback(
     () => <View style={styles.itemSeperator} />,
@@ -43,7 +45,7 @@ export default function HomeScreen() {
     };
     loadCountries();
     setReloadAsyncStore(false);
-  }, [reloadAsyncStore, setLocalCountries]);
+  }, [reloadAsyncStore, setLocalCountries, pageNumber]);
 
   const onAddCountry = useCallback(() => {
     Toast.show('Details Added');
@@ -64,13 +66,20 @@ export default function HomeScreen() {
     navigation.navigate('AddCountry', params);
   };
 
+  const onEndReached = () => {
+    if (!isError) {
+      setPageNumber(pageNumber + 1);
+    }
+  };
+  console.log(PAGE_SIZE);
   const onRefresh = useCallback(() => {
-    setRefreshing(true);
-    isLoading;
-    setTimeout(() => {
-      setRefreshing(false);
-    }, 2000);
-  }, [isLoading]);
+    if (!isLoading) {
+      setRefreshing(true);
+      setTimeout(() => {
+        setRefreshing(false);
+      }, 2000);
+    }
+  }, [isLoading, setRefreshing]);
 
   const combinedData = (data || []).concat(localCountries || []);
 
@@ -103,12 +112,6 @@ export default function HomeScreen() {
       />
     </Skeleton>
   );
-  const onEndReached = () => {
-    if (!isLoading && !isError) {
-      setPageNumber(prevPageNumber => prevPageNumber + 1);
-      return filteredData ? pageNumber + 1 : [];
-    }
-  };
 
   return (
     <View>
@@ -153,7 +156,7 @@ export default function HomeScreen() {
               <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
             }
             ItemSeparatorComponent={ItemSeparatorComponent}
-            onEndReachedThreshold={0.4}
+            onEndReachedThreshold={0.3}
           />
         </View>
       )}
