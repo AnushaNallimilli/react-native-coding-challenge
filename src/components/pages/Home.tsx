@@ -71,7 +71,6 @@ export default function HomeScreen() {
       setPageNumber(pageNumber + 1);
     }
   };
-  console.log(PAGE_SIZE);
   const onRefresh = useCallback(() => {
     if (!isLoading) {
       setRefreshing(true);
