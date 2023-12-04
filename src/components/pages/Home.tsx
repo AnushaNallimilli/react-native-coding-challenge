@@ -20,10 +20,9 @@ import Skeleton from '../../shared/ui/skeleton/Skeleton';
 export default function HomeScreen() {
   const [searchTerm, setSearchTerm] = useState('');
   const [pageNumber, setPageNumber] = useState(1);
-  const PAGE_SIZE = 20;
   const [refreshing, setRefreshing] = useState(false);
-  const {data, isLoading, isError} = useCountryData(pageNumber, PAGE_SIZE);
-  const {localCountries, setLocalCountries} = useCountryHook(); // importing the hook using zustand
+  const {data, isLoading, isError} = useCountryData();
+  const {localCountries, setLocalCountries} = useCountryHook();
   const [reloadAsyncStore, setReloadAsyncStore] = useState(true);
 
   const navigation = useNavigation<NavigationProp<StartupParamsList>>();
@@ -68,7 +67,7 @@ export default function HomeScreen() {
 
   const onEndReached = () => {
     if (!isError) {
-      setPageNumber(pageNumber + 1);
+      setPageNumber(prevPageNumber => prevPageNumber + 1);
     }
   };
   const onRefresh = useCallback(() => {
@@ -155,7 +154,7 @@ export default function HomeScreen() {
               <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
             }
             ItemSeparatorComponent={ItemSeparatorComponent}
-            onEndReachedThreshold={0.3}
+            onEndReachedThreshold={0.4}
           />
         </View>
       )}
